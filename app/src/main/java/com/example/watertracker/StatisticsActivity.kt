@@ -10,9 +10,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import java.text.SimpleDateFormat
 import java.util.*
 
 class StatisticsActivity : AppCompatActivity() {
@@ -38,17 +42,22 @@ class StatisticsActivity : AppCompatActivity() {
         tvGoal.text = "Целевая норма: $dailyGoal мл"
 
         val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_YEAR, -6)
+        val currentDate = calendar.timeInMillis
+        calendar.add(Calendar.DAY_OF_YEAR, -7)
         val startOfWeek = calendar.timeInMillis
 
-        waterViewModel.getRecordsByDateRange(startOfWeek, Calendar.getInstance().timeInMillis).observe(this, Observer { records ->
+        waterViewModel.getRecordsByDateRange(startOfWeek, currentDate).observe(this, Observer { records ->
             val entries = mutableListOf<Entry>()
             var totalWater = 0f
             var daysWithData = 0
 
+            val dateLabels = mutableListOf<String>()
+            val dateFormatter = SimpleDateFormat("dd.MM", Locale.getDefault())
+
             for (dayOffset in 0..6) {
                 calendar.timeInMillis = startOfWeek + dayOffset * 24 * 60 * 60 * 1000
                 val date = calendar.timeInMillis
+                dateLabels.add(dateFormatter.format(Date(date + 24 * 60 * 60 * 1000)))
                 val waterForDay = records.filter { it.date >= date && it.date < date + 24 * 60 * 60 * 1000 }
                     .sumOf { it.amount }
                 entries.add(Entry(dayOffset.toFloat(), waterForDay.toFloat()))
@@ -58,20 +67,32 @@ class StatisticsActivity : AppCompatActivity() {
                 }
             }
 
-            val averageWater = if (daysWithData > 0) totalWater / daysWithData else 0f
+            val averageWater = if (daysWithData > 0) totalWater / daysWithData else 0
             tvAverage.text = "Среднее количество воды: ${averageWater.toInt()} мл"
 
             val dataSet = LineDataSet(entries, "Выпитая вода за последние 7 дней")
             dataSet.setDrawCircles(true)
             dataSet.setDrawValues(true)
-            dataSet.color = getColor(R.color.teal_700)
+            dataSet.color = getColor(R.color.primary)
             dataSet.valueTextColor = getColor(R.color.black)
             dataSet.circleRadius = 5f
-            dataSet.setCircleColor(getColor(R.color.teal_700))
+            dataSet.setCircleColor(getColor(R.color.primary))
             dataSet.lineWidth = 3f
+            dataSet.valueTextSize = 8f
 
             val lineData = LineData(dataSet)
             lineChart.data = lineData
+
+            val xAxis = lineChart.xAxis
+            xAxis.valueFormatter = IndexAxisValueFormatter(dateLabels)
+            xAxis.position = XAxis.XAxisPosition.TOP
+            xAxis.setDrawGridLines(false)
+            xAxis.setDrawAxisLine(true)
+            xAxis.granularity = 1f
+            xAxis.labelCount = 7
+
+            lineChart.description.text = ""
+
             lineChart.invalidate()
         })
 
