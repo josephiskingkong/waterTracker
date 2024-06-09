@@ -4,8 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -107,5 +109,41 @@ class StatisticsActivity : AppCompatActivity() {
                 imm.hideSoftInputFromWindow(it.windowToken, 0)
             }
         }
+
+        findViewById<Button>(R.id.btnCalculateGoal).setOnClickListener {
+            showCalculateDialog()
+        }
+    }
+
+    private fun showCalculateDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.calculate_layout, null)
+        val etWeight: EditText = dialogView.findViewById(R.id.editText_weight)
+        val etActivity: EditText = dialogView.findViewById(R.id.editText_daily_activity)
+        val cbMale: CheckBox = dialogView.findViewById(R.id.checkbox_male)
+        val cbFemale: CheckBox = dialogView.findViewById(R.id.checkbox_female)
+        val btnCalculate: Button = dialogView.findViewById(R.id.button_calculate)
+
+        cbMale.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                cbFemale.isChecked = false
+            }
+        }
+
+        cbFemale.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                cbMale.isChecked = false
+            }
+        }
+
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Рассчитать целевую норму")
+            .setView(dialogView)
+            .create()
+
+        btnCalculate.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }

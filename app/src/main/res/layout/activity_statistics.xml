@@ -18,7 +18,7 @@
         android:layout_below="@id/lineChart"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
-        android:text="Среднее количество воды: "
+        android:text="@string/textView_average_amount_water"
         android:textSize="18sp" />
 
     <TextView
@@ -38,8 +38,8 @@
         android:layout_below="@id/tvGoal"
         android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
-        android:hint="Введите норму воды"
-        android:inputType="number" />
+        android:hint="@string/editText_hint_input_water_rate"
+        android:inputType="number"/>
 
     <Button
         android:id="@+id/btnSetGoal"
@@ -48,5 +48,15 @@
         android:layout_below="@id/etGoal"
         android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
-        android:text="Установить норму" />
+        android:text="@string/button_set_goal" />
+
+    <Button
+        android:id="@+id/btnCalculateGoal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnSetGoal"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/button_calculate_goal" />
+
 </RelativeLayout>
