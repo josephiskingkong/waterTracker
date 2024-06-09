@@ -44,6 +44,8 @@ repositories {
 }
 
 dependencies {
+    implementation("org.json:json:20210307")
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("androidx.core:core-ktx:1.10.0")
     implementation("androidx.appcompat:appcompat:1.6.0")

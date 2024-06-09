@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -18,6 +19,15 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import org.json.JSONObject
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -141,9 +151,64 @@ class StatisticsActivity : AppCompatActivity() {
             .create()
 
         btnCalculate.setOnClickListener {
-            dialog.dismiss()
+            val weight = etWeight.text.toString().toIntOrNull()
+            val activity = etActivity.text.toString().toIntOrNull()
+            val sex = if (cbMale.isChecked) "male" else if (cbFemale.isChecked) "female" else null
+
+            if (weight != null && activity != null && sex != null) {
+                sendPostRequest(weight, activity, sex)
+                dialog.dismiss()
+            } else {
+                Toast.makeText(this, "Пожалуйста, заполните все поля", Toast.LENGTH_LONG).show()
+            }
         }
 
         dialog.show()
+    }
+
+    private fun sendPostRequest(weight: Int, activity: Int, sex: String) {
+        val client = OkHttpClient()
+
+        val json = """
+        {
+            "weight": $weight,
+            "activity": $activity,
+            "sex": "$sex"
+        }
+    """.trimIndent()
+
+        val requestBody = json.toRequestBody("application/json; charset=utf-8".toMediaType())
+
+        val request = Request.Builder()
+            .url("http://10.0.2.2:3000/getWaterIntake")
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    Toast.makeText(applicationContext, "Ошибка: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.use {
+                    if (!it.isSuccessful) {
+                        runOnUiThread {
+                            Toast.makeText(applicationContext, "Ошибка: ${it.message}", Toast.LENGTH_LONG).show()
+                        }
+                    } else {
+                        val responseString = it.body?.string()
+                        if (responseString != null) {
+                            val jsonObject = JSONObject(responseString)
+                            val waterIntakes = jsonObject.getString("waterIntake")
+                            runOnUiThread {
+                                findViewById<EditText>(R.id.etGoal).setText(waterIntakes)
+                            }
+                        }
+                    }
+                }
+            }
+        })
     }
 }
