@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">WaterTracker</string>
+    <string name="button_add_250_ml">250 мл</string>
+    <string name="button_add_330_ml">330 мл</string>
+    <string name="button_add_500_ml">500 мл</string>
+    <string name="hint_add_volume_water">Введите количество воды (мл)</string>
+    <string name="button_add_volume_water">Добавить</string>
+    <string name="button_add_water">Добавить воду</string>
+    <string name="button_statistic">Статистика</string>
 </resources>

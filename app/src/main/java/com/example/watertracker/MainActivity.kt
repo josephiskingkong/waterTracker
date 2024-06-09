@@ -66,9 +66,11 @@ class MainActivity : AppCompatActivity() {
         })
 
         btnAddWater.setOnClickListener {
-            val intent = Intent(this, AddWaterActivity::class.java)
-            intent.putExtra("selectedDate", selectedDate)
-            startActivity(intent)
+            val bottomSheetFragment = AddWaterActivity()
+            val args = Bundle()
+            args.putLong("selectedDate", selectedDate)
+            bottomSheetFragment.arguments = args
+            bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
         }
 
         btnViewStats.setOnClickListener {

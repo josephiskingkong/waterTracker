@@ -1,31 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".AddWaterActivity">
+
+    <LinearLayout
+        android:id="@+id/linearLayoutButtons"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/etWaterAmount"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
+        <Button
+            android:id="@+id/button_add_250_ml"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/primary"
+            android:text="@string/button_add_250_ml"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/button_add_330_ml"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/button_add_330_ml"
+            android:backgroundTint="@color/primary"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"/>
+
+        <Button
+            android:id="@+id/button_add_500_ml"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/button_add_500_ml"
+            android:backgroundTint="@color/primary"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:layout_marginStart="10dp"/>
+    </LinearLayout>
 
     <EditText
         android:id="@+id/etWaterAmount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Введите количество воды (мл)"
+        android:hint="@string/hint_add_volume_water"
         android:inputType="number"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayoutButtons"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="18dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"/>
 
     <Button
         android:id="@+id/btnSave"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Добавить"
+        android:layout_margin="16dp"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:text="@string/button_add_volume_water"
         app:layout_constraintTop_toBottomOf="@id/etWaterAmount"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        android:backgroundTint="@color/primary"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

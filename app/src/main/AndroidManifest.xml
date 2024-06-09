@@ -22,7 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddWaterActivity"></activity>
         <activity android:name=".StatisticsActivity"></activity>
         <receiver android:name=".NotificationReceiver" />
         <activity android:name=".CalendarActivity" />
