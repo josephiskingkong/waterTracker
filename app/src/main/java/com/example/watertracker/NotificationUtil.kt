@@ -18,16 +18,19 @@ import androidx.core.app.NotificationManagerCompat
 class NotificationUtil {
 
     companion object {
-        fun scheduleNotification(context: Context) {
+        fun scheduleRepeatingNotification(context: Context) {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val intent = Intent(context, NotificationReceiver::class.java)
-            val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-            val triggerTime = SystemClock.elapsedRealtime() + 5000
+            val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            val triggerTime = SystemClock.elapsedRealtime() + 30000
 
-            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerTime, pendingIntent)
+            val interval = 30000L
+
+            alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerTime, interval, pendingIntent)
         }
     }
 }
+
 
 class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
@@ -72,3 +75,4 @@ class NotificationReceiver : BroadcastReceiver() {
         }
     }
 }
+

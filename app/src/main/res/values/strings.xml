@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">WaterTracker</string>
+    <string name="button_add_250_ml">250 мл</string>
+    <string name="button_add_330_ml">330 мл</string>
+    <string name="button_add_500_ml">500 мл</string>
+    <string name="hint_add_volume_water">Введите количество воды (мл)</string>
+    <string name="button_add_volume_water">Добавить</string>
+    <string name="button_add_water">Добавить воду</string>
+    <string name="button_statistic">Статистика</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="button_calculate_goal">Рассчитать норму</string>
+    <string name="button_set_goal">Установить норму</string>
+    <string name="editText_daily_activity">Ваша дневная активность (час)</string>
+    <string name="editText_weight">Ваш вес (кг)</string>
+    <string name="textView_average_amount_water">Среднее количество воды:</string>
+    <string name="editText_hint_input_water_rate">Введите норму воды</string>
+    <string name="checkbox_female">Женский</string>
+    <string name="checkbox_male">Мужской</string>
+    <string name="textview_choose_gender">Выберите пол</string>
+    <string name="title_calculate_rate">Рассчитать целевую норму</string>
 </resources>

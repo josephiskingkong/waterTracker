@@ -11,7 +11,7 @@ class AppLifecycleHandler(private val context: Context) : Application.ActivityLi
 
     private val handler = Handler(Looper.getMainLooper())
     private val runnable = Runnable {
-        NotificationUtil.scheduleNotification(context)
+        NotificationUtil.scheduleRepeatingNotification(context)
     }
     private var isInForeground = false
 

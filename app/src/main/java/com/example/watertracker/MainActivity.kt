@@ -1,12 +1,17 @@
 package com.example.watertracker
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CalendarActivity.OnDateSelectedListener {
 
     private lateinit var waterViewModel: WaterViewModel
     private lateinit var adapter: WaterRecordAdapter
@@ -66,9 +71,11 @@ class MainActivity : AppCompatActivity() {
         })
 
         btnAddWater.setOnClickListener {
-            val intent = Intent(this, AddWaterActivity::class.java)
-            intent.putExtra("selectedDate", selectedDate)
-            startActivity(intent)
+            val bottomSheetFragment = AddWaterActivity()
+            val args = Bundle()
+            args.putLong("selectedDate", selectedDate)
+            bottomSheetFragment.arguments = args
+            bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
         }
 
         btnViewStats.setOnClickListener {
@@ -77,9 +84,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         fabCalendar.setOnClickListener {
-            val calendarIntent = Intent(this, CalendarActivity::class.java)
-            calendarIntent.putExtra("selectedDate", selectedDate)
-            startActivityForResult(calendarIntent, calendarRequestCode)
+            val bottomSheetFragment = CalendarActivity.newInstance(selectedDate)
+            bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
+            } else {
+                NotificationUtil.scheduleRepeatingNotification(this)
+            }
+        } else {
+            NotificationUtil.scheduleRepeatingNotification(this)
         }
     }
 
@@ -108,5 +124,13 @@ class MainActivity : AppCompatActivity() {
                 updateProgressBar()
             })
         }
+    }
+
+    override fun onDateSelected(newSelectedDate: Long) {
+        selectedDate = newSelectedDate
+        waterViewModel.getRecordsForDate(selectedDate).observe(this, Observer { records ->
+            adapter.submitList(records)
+            updateProgressBar()
+        })
     }
 }

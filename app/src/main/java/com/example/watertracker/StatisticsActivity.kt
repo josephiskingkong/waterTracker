@@ -4,8 +4,11 @@ import android.content.Context
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +19,15 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import org.json.JSONObject
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -37,7 +49,7 @@ class StatisticsActivity : AppCompatActivity() {
         tvAverage = findViewById(R.id.tvAverage)
         tvGoal = findViewById(R.id.tvGoal)
 
-        val sharedPreferences = getSharedPreferences("WaterTrackerPreferences", Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences("WaterTrackerPreferences", MODE_PRIVATE)
         dailyGoal = sharedPreferences.getInt("dailyGoal", 2000)
         tvGoal.text = "Целевая норма: $dailyGoal мл"
 
@@ -103,9 +115,100 @@ class StatisticsActivity : AppCompatActivity() {
                 sharedPreferences.edit().putInt("dailyGoal", dailyGoal).apply()
                 tvGoal.text = "Целевая норма: $dailyGoal мл"
 
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(it.windowToken, 0)
             }
         }
+
+        findViewById<Button>(R.id.btnCalculateGoal).setOnClickListener {
+            showCalculateDialog()
+        }
+    }
+
+    private fun showCalculateDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.calculate_layout, null)
+        val etWeight: EditText = dialogView.findViewById(R.id.editText_weight)
+        val etActivity: EditText = dialogView.findViewById(R.id.editText_daily_activity)
+        val cbMale: CheckBox = dialogView.findViewById(R.id.checkbox_male)
+        val cbFemale: CheckBox = dialogView.findViewById(R.id.checkbox_female)
+        val btnCalculate: Button = dialogView.findViewById(R.id.button_calculate)
+
+        cbMale.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                cbFemale.isChecked = false
+            }
+        }
+
+        cbFemale.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                cbMale.isChecked = false
+            }
+        }
+
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(getString(R.string.title_calculate_rate))
+            .setView(dialogView)
+            .create()
+
+        btnCalculate.setOnClickListener {
+            val weight = etWeight.text.toString().toIntOrNull()
+            val activity = etActivity.text.toString().toIntOrNull()
+            val sex = if (cbMale.isChecked) "male" else if (cbFemale.isChecked) "female" else null
+
+            if (weight != null && activity != null && sex != null) {
+                sendPostRequest(weight, activity, sex)
+                dialog.dismiss()
+            } else {
+                Toast.makeText(this, "Пожалуйста, заполните все поля", Toast.LENGTH_LONG).show()
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun sendPostRequest(weight: Int, activity: Int, sex: String) {
+        val client = OkHttpClient()
+
+        val json = """
+        {
+            "weight": $weight,
+            "activity": $activity,
+            "sex": "$sex"
+        }
+    """.trimIndent()
+
+        val requestBody = json.toRequestBody("application/json; charset=utf-8".toMediaType())
+
+        val request = Request.Builder()
+            .url("http://10.0.2.2:3000/getWaterIntake")
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    Toast.makeText(applicationContext, "Ошибка: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.use {
+                    if (!it.isSuccessful) {
+                        runOnUiThread {
+                            Toast.makeText(applicationContext, "Ошибка: ${it.message}", Toast.LENGTH_LONG).show()
+                        }
+                    } else {
+                        val responseString = it.body?.string()
+                        if (responseString != null) {
+                            val jsonObject = JSONObject(responseString)
+                            val waterIntakes = jsonObject.getString("waterIntake")
+                            runOnUiThread {
+                                findViewById<EditText>(R.id.etGoal).setText(waterIntakes)
+                            }
+                        }
+                    }
+                }
+            }
+        })
     }
 }
