@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CalendarActivity.OnDateSelectedListener {
 
     private lateinit var waterViewModel: WaterViewModel
     private lateinit var adapter: WaterRecordAdapter
@@ -79,9 +79,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         fabCalendar.setOnClickListener {
-            val calendarIntent = Intent(this, CalendarActivity::class.java)
-            calendarIntent.putExtra("selectedDate", selectedDate)
-            startActivityForResult(calendarIntent, calendarRequestCode)
+            val bottomSheetFragment = CalendarActivity.newInstance(selectedDate)
+            bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
         }
     }
 
@@ -110,5 +109,13 @@ class MainActivity : AppCompatActivity() {
                 updateProgressBar()
             })
         }
+    }
+
+    override fun onDateSelected(newSelectedDate: Long) {
+        selectedDate = newSelectedDate
+        waterViewModel.getRecordsForDate(selectedDate).observe(this, Observer { records ->
+            adapter.submitList(records)
+            updateProgressBar()
+        })
     }
 }
