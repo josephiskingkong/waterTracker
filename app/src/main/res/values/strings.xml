@@ -5,9 +5,8 @@
     <string name="button_add_500_ml">500 мл</string>
     <string name="hint_add_volume_water">Введите количество воды (мл)</string>
     <string name="button_add_volume_water">Добавить</string>
-    <string name="button_add_water">Добавить воду</string>
+    <string name="button_add_water">Добавить</string>
     <string name="button_statistic">Статистика</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="button_calculate_goal">Рассчитать норму</string>
     <string name="button_set_goal">Установить норму</string>
     <string name="editText_daily_activity">Ваша дневная активность (час)</string>
@@ -18,4 +17,8 @@
     <string name="checkbox_male">Мужской</string>
     <string name="textview_choose_gender">Выберите пол</string>
     <string name="title_calculate_rate">Рассчитать целевую норму</string>
+    <string name="button_calendar">Календарь</string>
+    <string name="textView_volume_water">Выпито: 0 мл / 2000 мл</string>
+    <string name="button_delete">Удалить</string>
+    <string name="item_recycler_view">500 мл</string>
 </resources>

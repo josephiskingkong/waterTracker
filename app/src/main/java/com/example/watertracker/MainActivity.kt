@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity(), CalendarActivity.OnDateSelectedListene
     private lateinit var recyclerView: RecyclerView
     private lateinit var btnAddWater: Button
     private lateinit var btnViewStats: Button
-    private lateinit var fabCalendar: FloatingActionButton
+    private lateinit var fabCalendar: Button
     private lateinit var progressBar: ProgressBar
     private lateinit var tvProgress: TextView
 
@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity(), CalendarActivity.OnDateSelectedListene
         fabCalendar = findViewById(R.id.fabCalendar)
         progressBar = findViewById(R.id.progressBar)
         tvProgress = findViewById(R.id.tvProgress)
+
 
         val sharedPreferences = getSharedPreferences("WaterTrackerPreferences", Context.MODE_PRIVATE)
         dailyGoal = sharedPreferences.getInt("dailyGoal", 2000)

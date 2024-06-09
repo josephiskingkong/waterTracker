@@ -15,38 +15,40 @@
         app:layout_constraintBottom_toTopOf="@id/progressBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_margin="16dp"
         android:max="100"
+        android:progressDrawable="@drawable/progress_bar"
         app:layout_constraintBottom_toTopOf="@id/tvProgress"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
         android:id="@+id/tvProgress"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="189dp"
+        android:layout_height="22dp"
         android:layout_margin="16dp"
-        android:text="Выпито: 0 мл / 2000 мл"
+        android:text="@string/textView_volume_water"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@id/btnAddWater"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnAddWater"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="20dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="20dp"
         android:text="@string/button_add_water"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnViewStats"
         app:layout_constraintStart_toStartOf="parent"/>
@@ -55,29 +57,25 @@
         android:id="@+id/btnViewStats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="13dp"
         android:layout_marginBottom="20dp"
         android:text="@string/button_statistic"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/fabCalendar"
-        app:layout_constraintStart_toEndOf="@id/btnAddWater" />
+        app:layout_constraintStart_toEndOf="@id/btnAddWater"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <Button
         android:id="@+id/fabCalendar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="20dp"
         android:foregroundTint="@color/white"
-        android:outlineSpotShadowColor="@color/white"
-        android:src="@drawable/ic_calendar"
-        app:tint="@color/white"
-        android:tintMode="src_in"
-        android:visibility="visible"
+        android:textSize="14sp"
+        android:text="@string/button_calendar"
         app:backgroundTint="@color/primary"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:rippleColor="@color/white" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
