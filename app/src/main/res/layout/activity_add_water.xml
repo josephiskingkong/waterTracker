@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:paddingBottom="20dp"
     tools:context=".AddWaterActivity">
 
     <LinearLayout
@@ -74,11 +75,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:textSize="18sp"
-        android:textColor="@color/white"
+        android:backgroundTint="@color/primary"
         android:text="@string/button_add_volume_water"
-        app:layout_constraintTop_toBottomOf="@id/etWaterAmount"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/white"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:backgroundTint="@color/primary"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etWaterAmount" />
 </androidx.constraintlayout.widget.ConstraintLayout>

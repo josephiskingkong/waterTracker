@@ -25,7 +25,6 @@ class AddWaterActivity : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         waterViewModel = ViewModelProvider(this).get(WaterViewModel::class.java)
 
         selectedDate = arguments?.getLong("selectedDate") ?: Calendar.getInstance().timeInMillis
