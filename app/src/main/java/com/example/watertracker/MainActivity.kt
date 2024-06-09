@@ -1,12 +1,17 @@
 package com.example.watertracker
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -81,6 +86,16 @@ class MainActivity : AppCompatActivity(), CalendarActivity.OnDateSelectedListene
         fabCalendar.setOnClickListener {
             val bottomSheetFragment = CalendarActivity.newInstance(selectedDate)
             bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
+            } else {
+                NotificationUtil.scheduleRepeatingNotification(this)
+            }
+        } else {
+            NotificationUtil.scheduleRepeatingNotification(this)
         }
     }
 

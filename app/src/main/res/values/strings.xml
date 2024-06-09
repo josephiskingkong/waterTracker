@@ -17,4 +17,5 @@
     <string name="checkbox_female">Женский</string>
     <string name="checkbox_male">Мужской</string>
     <string name="textview_choose_gender">Выберите пол</string>
+    <string name="title_calculate_rate">Рассчитать целевую норму</string>
 </resources>

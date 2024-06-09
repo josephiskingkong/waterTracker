@@ -49,7 +49,7 @@ class StatisticsActivity : AppCompatActivity() {
         tvAverage = findViewById(R.id.tvAverage)
         tvGoal = findViewById(R.id.tvGoal)
 
-        val sharedPreferences = getSharedPreferences("WaterTrackerPreferences", Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences("WaterTrackerPreferences", MODE_PRIVATE)
         dailyGoal = sharedPreferences.getInt("dailyGoal", 2000)
         tvGoal.text = "Целевая норма: $dailyGoal мл"
 
@@ -115,7 +115,7 @@ class StatisticsActivity : AppCompatActivity() {
                 sharedPreferences.edit().putInt("dailyGoal", dailyGoal).apply()
                 tvGoal.text = "Целевая норма: $dailyGoal мл"
 
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(it.windowToken, 0)
             }
         }
@@ -146,7 +146,7 @@ class StatisticsActivity : AppCompatActivity() {
         }
 
         val dialog = AlertDialog.Builder(this)
-            .setTitle("Рассчитать целевую норму")
+            .setTitle(getString(R.string.title_calculate_rate))
             .setView(dialogView)
             .create()
 
