@@ -38,6 +38,7 @@ class StatisticsActivity : AppCompatActivity() {
     private lateinit var tvAverage: TextView
     private lateinit var tvGoal: TextView
     private var dailyGoal: Int = 2000
+    private var calendar: Calendar = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,14 +49,45 @@ class StatisticsActivity : AppCompatActivity() {
         lineChart = findViewById(R.id.lineChart)
         tvAverage = findViewById(R.id.tvAverage)
         tvGoal = findViewById(R.id.tvGoal)
+        val btnPreviousWeek = findViewById<Button>(R.id.btnPreviousWeek)
+        val btnNextWeek = findViewById<Button>(R.id.btnNextWeek)
 
         val sharedPreferences = getSharedPreferences("WaterTrackerPreferences", MODE_PRIVATE)
         dailyGoal = sharedPreferences.getInt("dailyGoal", 2000)
         tvGoal.text = "Целевая норма: $dailyGoal мл"
 
-        val calendar = Calendar.getInstance()
+        updateChart()
+
+        btnPreviousWeek.setOnClickListener {
+            calendar.add(Calendar.WEEK_OF_YEAR, -1)
+            updateChart()
+        }
+
+        btnNextWeek.setOnClickListener {
+            calendar.add(Calendar.WEEK_OF_YEAR, 1)
+            updateChart()
+        }
+
+        findViewById<Button>(R.id.btnSetGoal).setOnClickListener {
+            val newGoal = findViewById<EditText>(R.id.etGoal).text.toString().toIntOrNull()
+            if (newGoal != null && newGoal > 0) {
+                dailyGoal = newGoal
+                sharedPreferences.edit().putInt("dailyGoal", dailyGoal).apply()
+                tvGoal.text = "Целевая норма: $dailyGoal мл"
+
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(it.windowToken, 0)
+            }
+        }
+
+        findViewById<Button>(R.id.btnCalculateGoal).setOnClickListener {
+            showCalculateDialog()
+        }
+    }
+
+    private fun updateChart() {
         val currentDate = calendar.timeInMillis
-        calendar.add(Calendar.DAY_OF_YEAR, -7)
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
         val startOfWeek = calendar.timeInMillis
 
         waterViewModel.getRecordsByDateRange(startOfWeek, currentDate).observe(this, Observer { records ->
@@ -69,7 +101,7 @@ class StatisticsActivity : AppCompatActivity() {
             for (dayOffset in 0..6) {
                 calendar.timeInMillis = startOfWeek + dayOffset * 24 * 60 * 60 * 1000
                 val date = calendar.timeInMillis
-                dateLabels.add(dateFormatter.format(Date(date + 24 * 60 * 60 * 1000)))
+                dateLabels.add(dateFormatter.format(Date(date)))
                 val waterForDay = records.filter { it.date >= date && it.date < date + 24 * 60 * 60 * 1000 }
                     .sumOf { it.amount }
                 entries.add(Entry(dayOffset.toFloat(), waterForDay.toFloat()))
@@ -107,22 +139,6 @@ class StatisticsActivity : AppCompatActivity() {
 
             lineChart.invalidate()
         })
-
-        findViewById<Button>(R.id.btnSetGoal).setOnClickListener {
-            val newGoal = findViewById<EditText>(R.id.etGoal).text.toString().toIntOrNull()
-            if (newGoal != null && newGoal > 0) {
-                dailyGoal = newGoal
-                sharedPreferences.edit().putInt("dailyGoal", dailyGoal).apply()
-                tvGoal.text = "Целевая норма: $dailyGoal мл"
-
-                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(it.windowToken, 0)
-            }
-        }
-
-        findViewById<Button>(R.id.btnCalculateGoal).setOnClickListener {
-            showCalculateDialog()
-        }
     }
 
     private fun showCalculateDialog() {
