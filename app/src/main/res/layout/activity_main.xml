@@ -12,6 +12,7 @@
         android:layout_width="382dp"
         android:layout_height="536dp"
         android:layout_margin="16dp"
+        android:paddingTop="20dp"
         app:layout_constraintBottom_toTopOf="@id/progressBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +22,8 @@
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
+        android:paddingTop="20dp"
         android:layout_margin="16dp"
         android:max="100"
         android:progressDrawable="@drawable/progress_bar"
@@ -31,11 +33,12 @@
 
     <TextView
         android:id="@+id/tvProgress"
-        android:layout_width="189dp"
+        android:layout_width="match_parent"
         android:layout_height="22dp"
         android:layout_margin="16dp"
         android:text="@string/textView_volume_water"
         android:textSize="18sp"
+        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@id/btnAddWater"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
