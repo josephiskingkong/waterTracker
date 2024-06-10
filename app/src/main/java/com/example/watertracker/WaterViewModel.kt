@@ -53,4 +53,9 @@ class WaterViewModel(application: Application) : AndroidViewModel(application) {
     fun getRecordsByDateRange(startOfDay: Long, endOfDay: Long): LiveData<List<WaterRecord>> {
         return repository.getRecordsByDateRange(startOfDay, endOfDay)
     }
+
+    fun updateRecord(record: WaterRecord) = viewModelScope.launch {
+        repository.update(record)
+    }
 }
+

@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface WaterDao {
@@ -20,4 +21,7 @@ interface WaterDao {
 
     @Query("DELETE FROM water_table WHERE id = :id")
     suspend fun deleteRecordById(id: Int)
+
+    @Update
+    suspend fun update(record: WaterRecord)
 }

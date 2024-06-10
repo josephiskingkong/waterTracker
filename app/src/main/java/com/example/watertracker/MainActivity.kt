@@ -56,9 +56,18 @@ class MainActivity : AppCompatActivity(), CalendarActivity.OnDateSelectedListene
             }
         }
 
-        adapter = WaterRecordAdapter { record ->
-            waterViewModel.deleteRecord(record.id)
-        }
+        adapter = WaterRecordAdapter(
+            context = this,
+            onDeleteClick = { record ->
+                waterViewModel.deleteRecord(record.id)
+            },
+            onUpdateAmount = { updatedRecord ->
+                waterViewModel.updateRecord(updatedRecord)
+                waterViewModel.getRecordsForDate(Calendar.getInstance().timeInMillis).observe(this, Observer {
+                    adapter.submitList(it)
+                })
+            }
+        )
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter

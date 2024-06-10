@@ -1,14 +1,22 @@
 package com.example.watertracker
 
+import android.app.AlertDialog
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.watertracker.WaterRecord
 
-class WaterRecordAdapter(private val onDeleteClick: (WaterRecord) -> Unit) :
-    RecyclerView.Adapter<WaterRecordAdapter.WaterRecordViewHolder>() {
+class WaterRecordAdapter(
+    private val context: Context,
+    private val onDeleteClick: (WaterRecord) -> Unit,
+    private val onUpdateAmount: (WaterRecord) -> Unit,
+) : RecyclerView.Adapter<WaterRecordAdapter.WaterRecordViewHolder>() {
 
     private var records: List<WaterRecord> = listOf()
 
@@ -39,6 +47,33 @@ class WaterRecordAdapter(private val onDeleteClick: (WaterRecord) -> Unit) :
             btnDelete.setOnClickListener {
                 onDeleteClick(record)
             }
+
+            tvAmount.setOnClickListener {
+                showEditAmountDialog(record)
+            }
+        }
+
+        private fun showEditAmountDialog(record: WaterRecord) {
+            val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_edit_amount, null)
+            val etAmount: EditText = dialogView.findViewById(R.id.etAmount)
+            etAmount.setText(record.amount.toString())
+
+            val dialog = AlertDialog.Builder(context)
+                .setTitle("Изменить количество")
+                .setView(dialogView)
+                .setPositiveButton("Сохранить") { _, _ ->
+                    val newAmount = etAmount.text.toString().toIntOrNull()
+                    if (newAmount != null && newAmount > 0) {
+                        record.amount = newAmount
+                        onUpdateAmount(record)
+                    } else {
+                        Toast.makeText(context, "Пожалуйста, введите корректное значение", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .setNegativeButton("Отмена", null)
+                .create()
+
+            dialog.show()
         }
     }
 }

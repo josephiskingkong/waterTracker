@@ -16,6 +16,10 @@ class WaterRepository(private val waterDao: WaterDao) {
         waterDao.deleteRecordById(id)
     }
 
+    suspend fun update(record: WaterRecord) {
+        waterDao.update(record)
+    }
+
     suspend fun insert(record: WaterRecord) {
         waterDao.insert(record)
     }
